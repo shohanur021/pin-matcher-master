@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="inputForPin" class="form-control text-center " type="text" value="" >
+                    <button id="generatePin" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="inputForNum" class="form-control text-center" value="">
+                    <div class="numbers">
+                        <div class="calc-body">
+                            <div class="calc-button-row">
+                              <div  class="button inputDigit">7</div>
+                              <div class="button inputDigit">8</div>
+                              <div class="button inputDigit">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div class="button inputDigit">4</div>
+                              <div class="button inputDigit">5</div>
+                              <div class="button inputDigit">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div class="button inputDigit">1</div>
+                              <div class="button inputDigit">2</div>
+                              <div class="button inputDigit">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div id="deleteDigit" class="button"><</div>
+                                <div class="button inputDigit">0</div>
+                                <div id="clearNumber" class="button">C</div>
+                            </div>
+                            <div>
+                                <button id="submitButton" type="submit" class="submit-btn">Submit</button>
+                                <p class="action-left"><span id="tryLeft">3</span> try left</p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="notify-section">
+            <p id="notSimilar" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="similar" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+        </div>
+    </div>
+
+<script>
+    
+    // for taking a random number and put the number in the display
+    document.getElementById('generatePin').addEventListener('click',function(){
+        let randomNum=Math.floor(Math.random()*9000)+1000;
+        document.getElementById('inputForPin').value=randomNum; 
+        displayNumber=0;
+        displayInput(0);
+        showDisplayNone(); 
+        if(temp==0){
+           document.getElementById('tryLeft').innerText=0;
+        }
+        else{
+            temp=3;
+            document.getElementById('tryLeft').innerText=temp;
+        }   
+    })
+    
+    //for the buttons of (0 to 9)
+    let displayNumber=0;
+    var inputDigit=document.getElementsByClassName("inputDigit");
+    for(let i=0; i<inputDigit.length; i++){
+        inputDigit[i].addEventListener('click',function(){
+            digit=parseInt(this.innerHTML);           
+            displayNumber=displayNumber*10+digit;
+            displayInput(displayNumber); 
+            showDisplayNone();      
+        })             
+    }
+   
+    //for backspace Button
+    document.getElementById('deleteDigit').addEventListener('click',function(){
+        displayNumber=Math.floor(displayNumber/10);
+        displayInput(displayNumber);
+        showDisplayNone();    
+    })   
+    
+    //for the clear Button 
+    document.getElementById('clearNumber') .addEventListener('click',function(){
+        displayNumber=0;
+        displayInput(0);
+        showDisplayNone(); 
+    })  
+
+    //for showing the user Input in the display
+    function displayInput(num){
+        if(num==0){
+            document.getElementById('inputForNum').value="";
+        }
+        else{
+            document.getElementById('inputForNum').value=num;
+        }    
+    }  
+
+    let temp=3;  //for handling the 3 try left & disable the button
+    //For Submit button
+    document.getElementById('submitButton').addEventListener('click',function(){
+        let num1=document.getElementById('inputForPin').value;
+        let num2=document.getElementById('inputForNum').value;
+        
+        if(num1==""  ||  num2==""){ 
+            showDisplayNone();
+            alert("plz fill the input first"); 
+        }
+        else if(num1==num2){
+            document.getElementById('similar').style.display="block";   
+            temp=3; 
+            document.getElementById('tryLeft').innerText=temp;
+        }
+        else if(num1!=num2){
+            temp=temp-1;
+            document.getElementById('tryLeft').innerText=temp;
+            if(temp==0){
+                var submitButton=document.getElementById('submitButton');
+                submitButton.disabled=true;
+                submitButton.style.backgroundColor="red";
+                submitButton.innerText="Disabled";
+            }
+            document.getElementById('notSimilar').style.display="block";  
+        }   
+    })
+
+    
+    function showDisplayNone(){
+        document.getElementById('similar').style.display="none";
+        document.getElementById('notSimilar').style.display="none";  
+    }
+
+</script>
+</body>
+</html>
